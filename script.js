@@ -102,43 +102,33 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to display search results
   function displaySearchResults(results) {
     // Clear previous results
-    searchResults.innerHTML = '';
+    while (searchResults.firstChild) {
+      searchResults.removeChild(searchResults.firstChild);
+    }
+
+    // Get the template
+    const template = document.getElementById('search-result-template');
 
     // Create and append result elements
     results.forEach((result, index) => {
-      const resultElement = document.createElement('div');
-      resultElement.className = 'search-result';
+      // Clone the template content
+      const resultElement = template.content.cloneNode(true).querySelector('.search-result');
       resultElement.style.cursor = 'pointer'; // Add pointer cursor to indicate clickability
 
-      // Create hostname header
-      const hostname = document.createElement('h3');
+      // Set hostname
+      const hostname = resultElement.querySelector('h3');
       hostname.textContent = result.hostname;
-      resultElement.appendChild(hostname);
 
-      // Create details container
-      const details = document.createElement('div');
-      details.className = 'search-result-details';
+      // Set validity period
+      const validFromValue = resultElement.querySelectorAll('.search-result-value')[0];
+      validFromValue.textContent = result.notBefore;
 
-      // Add validity period
-      const validFrom = document.createElement('div');
-      validFrom.className = 'search-result-detail';
-      validFrom.innerHTML = '<span class="search-result-label">Valid From:</span> ' + result.notBefore;
-      details.appendChild(validFrom);
+      const validToValue = resultElement.querySelectorAll('.search-result-value')[1];
+      validToValue.textContent = result.notAfter;
 
-      const validTo = document.createElement('div');
-      validTo.className = 'search-result-detail';
-      validTo.innerHTML = '<span class="search-result-label">Valid To:</span> ' + result.notAfter;
-      details.appendChild(validTo);
-
-      // Add issuer
-      const issuer = document.createElement('div');
-      issuer.className = 'search-result-detail';
-      issuer.style.gridColumn = '1 / span 2'; // Make it span both columns
-      issuer.innerHTML = '<span class="search-result-label">Issuer:</span> ' + result.issuer;
-      details.appendChild(issuer);
-
-      // Append details to result
-      resultElement.appendChild(details);
+      // Set issuer
+      const issuerValue = resultElement.querySelectorAll('.search-result-value')[2];
+      issuerValue.textContent = result.issuer;
 
       // Add click event to navigate to certificate details
       resultElement.addEventListener('click', function() {
@@ -172,7 +162,10 @@ document.addEventListener('DOMContentLoaded', function () {
       certDetailsContainer.className = 'certificate-details';
       container.appendChild(certDetailsContainer);
     } else {
-      certDetailsContainer.innerHTML = ''; // Clear previous details
+      // Clear previous details
+      while (certDetailsContainer.firstChild) {
+        certDetailsContainer.removeChild(certDetailsContainer.firstChild);
+      }
     }
 
     // Fetch certificate details
@@ -189,12 +182,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const infoSection = document.createElement('div');
       infoSection.className = 'certificate-info';
 
+      // Get the template
+      const rowTemplate = document.getElementById('certificate-detail-row-template');
+
       // Add certificate details
       const addDetailRow = (label, value) => {
-        const row = document.createElement('div');
-        row.className = 'certificate-detail-row';
-        row.innerHTML = `<span class="certificate-detail-label">${label}:</span> <span class="certificate-detail-value">${value}</span>`;
-        infoSection.appendChild(row);
+        const rowClone = rowTemplate.content.cloneNode(true);
+        const labelElement = rowClone.querySelector('.certificate-detail-label');
+        const valueElement = rowClone.querySelector('.certificate-detail-value');
+
+        labelElement.textContent = label + ':';
+        valueElement.textContent = value;
+
+        infoSection.appendChild(rowClone);
       };
 
       addDetailRow('SHA-256', details.sha256);

@@ -19,6 +19,35 @@
       <!-- Search results will be displayed here -->
     </div>
   </div>
+
+  <!-- Templates -->
+  <template id="search-result-template">
+    <div class="search-result">
+      <h3></h3>
+      <div class="search-result-details">
+        <div class="search-result-detail">
+          <span class="search-result-label">Valid From:</span>
+          <span class="search-result-value"></span>
+        </div>
+        <div class="search-result-detail">
+          <span class="search-result-label">Valid To:</span>
+          <span class="search-result-value"></span>
+        </div>
+        <div class="search-result-detail" style="grid-column: 1 / span 2;">
+          <span class="search-result-label">Issuer:</span>
+          <span class="search-result-value"></span>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="certificate-detail-row-template">
+    <div class="certificate-detail-row">
+      <span class="certificate-detail-label"></span>
+      <span class="certificate-detail-value"></span>
+    </div>
+  </template>
+
   <footer>
     certcat.dev is an open source certificate search engine
   </footer>
