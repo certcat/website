@@ -136,6 +136,51 @@ footer {
   }
 }
 
+/* Certificate details styles */
+.certificate-details {
+  display: none;
+  width: 100%;
+  margin-top: 2rem;
+  padding: 0 16px;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.back-button {
+  margin-bottom: 16px;
+}
+
+.certificate-info {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.certificate-detail-row {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.certificate-detail-label {
+  font-weight: bold;
+  color: #555;
+  margin-right: 8px;
+}
+
+.certificate-pem {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
