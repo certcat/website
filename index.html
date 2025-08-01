@@ -4,85 +4,14 @@
   <meta charset="UTF-8">
   <title>certcat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      min-height: 100svh;
-      display: flex;
-      flex-direction: column;
-    }
-    .container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    h1 {
-      font-size: 3rem;
-      letter-spacing: 0.25rem;
-    }
-    .search-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      width: 420px;
-      max-width: 90vw;
-    }
-    .search-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-    }
-    input[type="text"] {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #0078d4;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background-color: #005fa3;
-    }
-    .coming-soon-message {
-      display: none;
-    }
-    footer {
-      text-align: center;
-      padding: 16px 0;
-      background: #f5f5f5;
-      font-size: 1rem;
-      color: #555;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <h1>certcat</h1>
     <form class="search-box" id="certcat-form" action="#" method="get">
-      <input type="text" placeholder="Search certificates..." name="q" required>
       <div class="search-row">
-        <label for="search-type">Search by</label>
-        <select id="search-type" name="type">
-          <option value="domain">Domain name</option>
-          <option value="serial">Serial Number</option>
-          <option value="cert-sha256">Certificate SHA256 hash</option>
-          <option value="spki-sha256">SPKI SHA256 hash</option>
-        </select>
+        <input type="text" placeholder="Search certificates..." name="q" required>
         <button type="submit">Search</button>
       </div>
     </form>
@@ -93,12 +22,5 @@
   <footer>
     certcat.dev is an open source certificate search engine
   </footer>
-  <script>
-    document.getElementById('certcat-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      document.getElementById('certcat-form').reset();
-      document.getElementById('certcat-form').style.display = 'none';
-      document.getElementById('coming-soon-message').style.display = 'block';
-    });
-    </script>
+  <script src="script.js"></script>
 </body>
