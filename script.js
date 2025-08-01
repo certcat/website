@@ -119,15 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const hostname = resultElement.querySelector('h3');
       hostname.textContent = result.hostname;
 
-      // Set validity period
-      const validFromValue = resultElement.querySelectorAll('.search-result-value')[0];
-      validFromValue.textContent = result.notBefore;
-
-      const validToValue = resultElement.querySelectorAll('.search-result-value')[1];
-      validToValue.textContent = result.notAfter;
+      // Set combined validity period
+      const validValue = resultElement.querySelectorAll('.search-result-value')[0];
+      validValue.textContent = `${result.notBefore} to ${result.notAfter}`;
 
       // Set issuer
-      const issuerValue = resultElement.querySelectorAll('.search-result-value')[2];
+      const issuerValue = resultElement.querySelectorAll('.search-result-value')[1];
       issuerValue.textContent = result.issuer;
 
       // Add click event to navigate to certificate details
