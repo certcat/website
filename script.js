@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('certcat-form');
   const container = document.querySelector('.container');
-  const searchBox = document.querySelector('.search-box');
-  const header = document.querySelector('h1');
-  const comingSoonMessage = document.getElementById('coming-soon-message');
+  const searchBox = document.querySelector('.search-box input');
   const searchResults = document.getElementById('search-results');
+
+  // Variable to track the last search query
+  let lastSearchQuery = '';
 
   // Create loading spinner element
   const loadingSpinner = document.createElement('div');
@@ -116,28 +117,56 @@ document.addEventListener('DOMContentLoaded', function() {
     searchResults.style.display = 'block';
   }
 
-  // Add event listener for form submission
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Get search query
-    const searchQuery = form.querySelector('input[type="text"]').value;
-
-    // Add class to animate elements to top
+  // Function to perform search
+  function performSearch(query, updateHistory = true) {
+    searchBox.value = query;
     container.classList.add('search-active');
-
-    // Show loading spinner
     loadingSpinner.style.display = 'block';
-
     searchResults.style.display = 'none';
 
+    if (updateHistory) {
+      const url = new URL(window.location);
+      url.searchParams.set('q', query);
+      window.history.pushState({ query: query }, '', url);
+    }
+
     // Call mock search function
-    mockSearch(searchQuery).then(results => {
+    mockSearch(query).then(results => {
       // Hide loading spinner
       loadingSpinner.style.display = 'none';
 
       // Display search results
       displaySearchResults(results);
     });
+  }
+
+  // Add event listener for form submission
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const searchQuery = searchBox.value;
+
+    if (searchQuery.trim()) {
+      performSearch(searchQuery, searchQuery !== lastSearchQuery);
+      lastSearchQuery = searchQuery;
+    }
   });
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', function(event) {
+    if (event.state && event.state.query) {
+      performSearch(event.state.query, false);
+    } else {
+      // If no state, reset the page
+      searchBox.value = '';
+      container.classList.remove('search-active');
+      searchResults.style.display = 'none';
+    }
+  });
+
+  // Check for search parameter on page load
+  let params = new URLSearchParams(window.location.search);
+  const initialQuery = params.get('q');
+  if (initialQuery) {
+    performSearch(initialQuery, false);
+  }
 });
