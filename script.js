@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('certcat-form');
   const container = document.querySelector('.container');
   const searchBox = document.querySelector('.search-box input');
@@ -30,10 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
 
         const subdomains = [
-            "www", "git", "www", "", "",
-            "www", "git", "www", "", "",
-            "www", "git", "www", "", "",
-            "www", "git", "www", "", "mail",
+          "www", "git", "www", "", "",
+          "www", "git", "www", "", "",
+          "www", "git", "www", "", "",
+          "www", "git", "www", "", "mail",
         ];
 
         // Current date for reference
@@ -48,15 +48,15 @@ document.addEventListener('DOMContentLoaded', function() {
           notAfterDate.setDate(notAfterDate.getDate() + Math.floor(Math.random() * 365) + 90); // 3-12 months validity
 
           // Fake domain:
-            hostname = query;
-            if (subdomains[i] !== "") {
-                hostname = subdomains[i] + "." + query;
-            }
+          hostname = query;
+          if (subdomains[i] !== "") {
+            hostname = subdomains[i] + "." + query;
+          }
           // Create result object
           results.push({
             hostname: hostname,
-            notBefore: notBeforeDate.toISOString().split('.')[0]+"Z",
-            notAfter: notAfterDate.toISOString().split('.')[0]+"Z",
+            notBefore: notBeforeDate.toISOString().split('.')[0] + "Z",
+            notAfter: notAfterDate.toISOString().split('.')[0] + "Z",
             issuer: issuers[Math.floor(Math.random() * issuers.length)]
           });
         }
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (updateHistory) {
       const url = new URL(window.location);
       url.searchParams.set('q', query);
-      window.history.pushState({ query: query }, '', url);
+      window.history.pushState({query: query}, '', url);
     }
 
     // Call mock search function
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Add event listener for form submission
-  form.addEventListener('submit', function(event) {
+  form.addEventListener('submit', function (event) {
     event.preventDefault();
     const searchQuery = searchBox.value;
 
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Handle browser back/forward buttons
-  window.addEventListener('popstate', function(event) {
+  window.addEventListener('popstate', function (event) {
     if (event.state && event.state.query) {
       performSearch(event.state.query, false);
     } else {
