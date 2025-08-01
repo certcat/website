@@ -111,6 +111,12 @@ button:hover {
   color: #555;
 }
 
+@media (max-width: 768px) {
+  .search-result-details {
+    flex-direction: column;
+  }
+}
+
 footer {
   text-align: center;
   padding: 16px 0;
