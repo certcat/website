@@ -11,6 +11,11 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
 .container.search-active {
   justify-content: flex-start;
@@ -66,7 +71,6 @@ button:hover {
   display: none;
   width: 100%;
   margin-top: 2rem;
-  padding: 0 16px;
   box-sizing: border-box;
 }
 
@@ -140,7 +144,6 @@ footer {
   display: none;
   width: 100%;
   margin-top: 2rem;
-  padding: 0 16px;
   box-sizing: border-box;
   animation: fadeIn 0.3s ease-out;
 }
