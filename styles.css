@@ -95,14 +95,15 @@ button:hover {
 }
 
 .search-result-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   font-size: 0.9rem;
 }
 
 .search-result-detail {
   margin: 4px 0;
+  flex: 1 0 45%;
 }
 
 .search-result-label {
