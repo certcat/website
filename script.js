@@ -144,30 +144,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Create and append result elements
     results.forEach((result) => {
-      // Clone the template content
-      const resultElement = template.content
+      const searchResult = template.content
         .cloneNode(true)
         .querySelector(".search-result");
-      resultElement.style.cursor = "pointer"; // Add pointer cursor to indicate clickability
 
-      // Set hostname
-      const hostname = resultElement.querySelector("h3");
-      hostname.textContent = result.hostname;
-
-      // Set combined validity period
-      const validValue = resultElement.querySelectorAll(
-        ".search-result-value",
-      )[0];
-      validValue.textContent = `${result.notBefore} to ${result.notAfter}`;
-
-      // Set issuer
-      const issuerValue = resultElement.querySelectorAll(
-        ".search-result-value",
-      )[1];
-      issuerValue.textContent = result.issuer;
+      searchResult.querySelector("h3").textContent = result.hostname;
+      searchResult.querySelector(".validity .value").textContent =
+        `${result.notBefore} to ${result.notAfter}`;
+      searchResult.querySelector(".issuer .value").textContent = result.issuer;
 
       // Add click event to navigate to certificate details
-      resultElement.addEventListener("click", function () {
+      searchResult.addEventListener("click", function () {
         const url = new URL(window.location);
         url.searchParams.delete("q"); // Remove search query parameter
         url.searchParams.set("sha256", result.sha256); // Add sha256 parameter
@@ -180,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       // Append result to results container
-      searchResults.appendChild(resultElement);
+      searchResults.appendChild(searchResult);
     });
 
     // Show results container

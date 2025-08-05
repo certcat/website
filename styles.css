@@ -75,6 +75,7 @@ button:hover {
 }
 
 .search-result {
+  cursor: pointer;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -103,12 +104,12 @@ button:hover {
   font-size: 0.9rem;
 }
 
-.search-result-detail {
+.search-result-details > div {
   margin: 4px 0;
   flex: 1 0 45%;
 }
 
-.search-result-label {
+.search-result-details > div > .label {
   font-weight: bold;
   color: #555;
 }
