@@ -1,51 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>certcat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <h1>certcat</h1>
-    <form class="search-box" id="certcat-form" action="#" method="get">
-      <div class="search-row">
-        <input type="text" placeholder="Search certificates..." name="q" required>
-        <button type="submit">Search</button>
-      </div>
-    </form>
-    <div id="search-results" class="search-results">
-      <!-- Search results will be displayed here -->
-    </div>
-  </div>
-
-  <!-- Templates -->
-  <template id="search-result-template">
-    <div class="search-result">
-      <h3></h3>
-      <div class="search-result-details">
-        <div class="search-result-detail">
-          <span class="search-result-label">Valid:</span>
-          <span class="search-result-value"></span>
+  <head>
+    <meta charset="UTF-8" />
+    <title>certcat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>certcat</h1>
+      <form class="search-box" id="certcat-form" action="#" method="get">
+        <div class="search-row">
+          <input
+            type="text"
+            placeholder="Search certificates..."
+            name="q"
+            required
+          />
+          <button type="submit">Search</button>
         </div>
-        <div class="search-result-detail">
-          <span class="search-result-label">Issuer:</span>
-          <span class="search-result-value"></span>
-        </div>
+      </form>
+      <div id="search-results" class="search-results">
+        <!-- Search results will be displayed here -->
       </div>
     </div>
-  </template>
 
-  <template id="certificate-detail-row-template">
-    <div class="certificate-detail-row">
-      <span class="certificate-detail-label"></span>
-      <span class="certificate-detail-value"></span>
-    </div>
-  </template>
+    <!-- Templates -->
+    <template id="search-result-template">
+      <div class="search-result">
+        <h3></h3>
+        <div class="search-result-details">
+          <div class="search-result-detail">
+            <span class="search-result-label">Valid:</span>
+            <span class="search-result-value"></span>
+          </div>
+          <div class="search-result-detail">
+            <span class="search-result-label">Issuer:</span>
+            <span class="search-result-value"></span>
+          </div>
+        </div>
+      </div>
+    </template>
 
-  <footer>
-    certcat.dev is an open source certificate search engine
-  </footer>
-  <script src="script.js"></script>
-</body>
+    <template id="certificate-detail-row-template">
+      <div class="certificate-detail-row">
+        <span class="certificate-detail-label"></span>
+        <span class="certificate-detail-value"></span>
+      </div>
+    </template>
+
+    <footer>certcat.dev is an open source certificate search engine</footer>
+    <script src="script.js"></script>
+  </body>
+</html>
