@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const template = document.getElementById("search-result-template");
 
     // Create and append result elements
-    results.forEach((result, index) => {
+    results.forEach((result) => {
       // Clone the template content
       const resultElement = template.content
         .cloneNode(true)
