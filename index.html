@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="container">
-      <h1>certcat</h1>
+      <h1 id="title">certcat</h1>
       <form class="search-box" id="certcat-form" action="#" method="get">
         <div class="search-row">
           <input
@@ -20,10 +20,11 @@
           <button type="submit">Search</button>
         </div>
       </form>
-      <div id="search-results" class="search-results">
-        <!-- Search results will be displayed here -->
+      <div id="pages">
+        <div id="search-results"></div>
+        <div id="certificate-details"></div>
+        <div id="loading-spinner"></div>
       </div>
-      <div id="loading-spinner"></div>
     </div>
 
     <!-- Templates -->

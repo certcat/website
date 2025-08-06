@@ -4,131 +4,220 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchBox = document.querySelector(".search-box input");
   const searchResults = document.getElementById("search-results");
   const loadingSpinner = document.getElementById("loading-spinner");
+  const certDetailsContainer = document.getElementById("certificate-details");
+  const title = document.getElementById("title")
+  const pages = document.querySelectorAll("div#pages > div");
 
-  // Variable to track the last search query
-  let lastSearchQuery = "";
+  // Navigation states
+  const NavigationState = {
+    HOME: "home",
+    SEARCH: "search",
+    CERTIFICATE: "certificate",
+  };
+
+  // Centralized navigation function
+  function navigate(state, data = {}, updateHistory) {
+    const url = new URL(window.location);
+
+    // Reset: Hide all pages and clear URL parameters
+    pages.forEach((page) => {
+      page.style.display = "none";
+    });
+    url.search = "";
+
+    // Reset, nothing more to do:
+    if (state === NavigationState.HOME) {
+      if (updateHistory) {
+        window.history.pushState({}, "", url);
+      }
+      container.classList.remove("search-active");
+      searchBox.value = "";
+      return;
+    }
+
+    // Set URL and history:
+    switch (state) {
+      case NavigationState.SEARCH:
+        url.searchParams.set("q", data.query);
+        if (updateHistory) {
+          window.history.pushState({query: data.query}, "", url);
+        }
+        break;
+      case NavigationState.CERTIFICATE:
+        url.searchParams.set("sha256", data.sha256);
+        if (updateHistory) {
+          window.history.pushState({sha256: data.sha256}, "", url);
+        }
+        break;
+    }
+
+    // Set up spinner
+    loadingSpinner.style.display = "block";
+    console.log("loading");
+
+    // Load and display appropriate data:
+    getData(data).then((results) => {
+      console.log("results ready");
+      loadingSpinner.style.display = "none";
+      switch (state) {
+        case NavigationState.SEARCH:
+          renderSearch(data, results);
+          break;
+        case NavigationState.CERTIFICATE:
+          renderCert(data, results);
+          break;
+      }
+    });
+
+    // Display the right page and update URL
+    switch (state) {
+      case NavigationState.SEARCH:
+        url.searchParams.set("q", data.query);
+        window.history.pushState({ query: data.query }, "", url);
+
+        searchBox.value = data.query;
+
+        form.style.display = "block";
+        searchResults.style.display = "block";
+        container.classList.add("search-active");
+        break;
+      case NavigationState.CERTIFICATE:
+        url.searchParams.set("sha256", data.sha256);
+        window.history.pushState({ sha256: data.sha256 }, "", url);
+
+        certDetailsContainer.style.display = "block";
+        form.style.display = "none";
+        container.classList.add("search-active");
+        break;
+    }
+  }
+
+  // getData calls the certcat API for the requested data, returning a Promise for the appropriate JSON object
+  // Of course this is a mock for now.
+  function getData(data) {
+    const query = JSON.stringify(data, null, 2);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (data.query) {
+          resolve(mockSearch(data.query));
+        } else if (data.sha256) {
+          resolve(mockGetCertificateDetails(data.sha256));
+        } else {
+          console.log("Unhandled data request:", query);
+          resolve({});
+        }
+      }, 1000);
+    });
+  }
 
   // Mock function to fetch certificate details by sha256
   function mockGetCertificateDetails(sha256) {
-    return new Promise((resolve) => {
-      // Simulate network delay
-      setTimeout(() => {
-        // Generate mock certificate details
-        const details = {
-          sha256: sha256,
-          serialNumber: Array.from(Array(32), () =>
-            Math.floor(Math.random() * 16).toString(16),
-          ).join(""),
-          notBefore:
-            new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split(".")[0] + "Z",
-          notAfter:
-            new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split(".")[0] + "Z",
-          issuer: "C=US, O=Let's Encrypt, CN=R3",
-          subject: `CN=www.whatever.com`,
-          publicKeyAlgorithm: "RSA",
-          publicKeySize: "2048 bits",
-          signatureAlgorithm: "SHA256withRSA",
-          extensions: [
-            { name: "Basic Constraints", value: "CA:FALSE" },
-            { name: "Key Usage", value: "Digital Signature, Key Encipherment" },
-            {
-              name: "Subject Alternative Name",
-              value: "DNS:whatever.com, DNS:www.hostname.ca",
-            },
-          ],
-          pem: "-----BEGIN CERTIFICATE-----\nMIIFazCCBFOgAwIBAgISA3G+jQNGhyZbj4KmQXJ0K+qMMA0GCSqGSIb3DQEBCwUA\nMEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD\nExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0yMDA5MjIwMzM2MDJaFw0y\nMDEyMjEwMzM2MDJaMBsxGTAXBgNVBAMTEHd3dy5leGFtcGxlLmNvbTCCASIwDQYJ\nKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKl+YuVz4YMehwM1YGwQmxRh4GoGZekf\nSfOZOGjJKkwjSL9uIhBwl3qRIGwv5C9iYnviUfCB3BoWNwVH5nR8vXiTKHYU8x0J\n...\n-----END CERTIFICATE-----",
-        };
-
-        resolve(details);
-      }, 300);
-    });
+    // Generate mock certificate details
+    return {
+      sha256: sha256,
+      serialNumber: Array.from(Array(32), () =>
+        Math.floor(Math.random() * 16).toString(16),
+      ).join(""),
+      notBefore:
+        new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split(".")[0] + "Z",
+      notAfter:
+        new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split(".")[0] + "Z",
+      issuer: "C=US, O=Let's Encrypt, CN=R3",
+      subject: `CN=www.whatever.com`,
+      publicKeyAlgorithm: "RSA",
+      publicKeySize: "2048 bits",
+      signatureAlgorithm: "SHA256withRSA",
+      extensions: [
+        {name: "Basic Constraints", value: "CA:FALSE"},
+        {name: "Key Usage", value: "Digital Signature, Key Encipherment"},
+        {
+          name: "Subject Alternative Name",
+          value: "DNS:whatever.com, DNS:www.hostname.ca",
+        },
+      ],
+      pem: "-----BEGIN CERTIFICATE-----\nMIIFazCCBFOgAwIBAgISA3G+jQNGhyZbj4KmQXJ0K+qMMA0GCSqGSIb3DQEBCwUA\nMEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD\nExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0yMDA5MjIwMzM2MDJaFw0y\nMDEyMjEwMzM2MDJaMBsxGTAXBgNVBAMTEHd3dy5leGFtcGxlLmNvbTCCASIwDQYJ\nKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKl+YuVz4YMehwM1YGwQmxRh4GoGZekf\nSfOZOGjJKkwjSL9uIhBwl3qRIGwv5C9iYnviUfCB3BoWNwVH5nR8vXiTKHYU8x0J\n...\n-----END CERTIFICATE-----",
+    };
   }
 
   // Mock search function that returns certificate data
   function mockSearch(query) {
-    // This would normally be a fetch call to an API
-    return new Promise((resolve) => {
-      // Simulate network delay
-      setTimeout(() => {
-        // Generate 20 mock results
-        const results = [];
-        const issuers = [
-          "C=US, O=Let's Encrypt, CN=R3",
-          "C=US, O=DigiCert Inc, CN=DigiCert TLS RSA SHA256 2020 CA1",
-          "C=US, O=Amazon, CN=Amazon RSA 2048 M01",
-          "C=GB, O=Sectigo Limited, CN=Sectigo RSA Domain Validation Secure Server CA",
-          "C=US, O=Google Trust Services LLC, CN=GTS CA 1C3",
-        ];
+    // Generate 20 mock results
+    const results = [];
+    const issuers = [
+      "C=US, O=Let's Encrypt, CN=R3",
+      "C=US, O=DigiCert Inc, CN=DigiCert TLS RSA SHA256 2020 CA1",
+      "C=US, O=Amazon, CN=Amazon RSA 2048 M01",
+      "C=GB, O=Sectigo Limited, CN=Sectigo RSA Domain Validation Secure Server CA",
+      "C=US, O=Google Trust Services LLC, CN=GTS CA 1C3",
+    ];
 
-        const subdomains = [
-          "www",
-          "git",
-          "www",
-          "",
-          "",
-          "www",
-          "git",
-          "www",
-          "",
-          "",
-          "www",
-          "git",
-          "www",
-          "",
-          "",
-          "www",
-          "git",
-          "www",
-          "",
-          "mail",
-        ];
+    const subdomains = [
+      "www",
+      "git",
+      "www",
+      "",
+      "",
+      "www",
+      "git",
+      "www",
+      "",
+      "",
+      "www",
+      "git",
+      "www",
+      "",
+      "",
+      "www",
+      "git",
+      "www",
+      "",
+      "mail",
+    ];
 
-        // Current date for reference
-        const now = new Date();
+    // Current date for reference
+    const now = new Date();
 
-        for (let i = 0; i < subdomains.length; i++) {
-          // Generate random dates
-          const notBeforeDate = new Date(now);
-          notBeforeDate.setDate(
-            notBeforeDate.getDate() - Math.floor(Math.random() * 180),
-          ); // Up to 6 months ago
+    for (let i = 0; i < subdomains.length; i++) {
+      // Generate random dates
+      const notBeforeDate = new Date(now);
+      notBeforeDate.setDate(
+        notBeforeDate.getDate() - Math.floor(Math.random() * 180),
+      ); // Up to 6 months ago
 
-          const notAfterDate = new Date(notBeforeDate);
-          notAfterDate.setDate(
-            notAfterDate.getDate() + Math.floor(Math.random() * 365) + 90,
-          ); // 3-12 months validity
+      const notAfterDate = new Date(notBeforeDate);
+      notAfterDate.setDate(
+        notAfterDate.getDate() + Math.floor(Math.random() * 365) + 90,
+      ); // 3-12 months validity
 
-          // Fake domain:
-          let hostname = query;
-          if (subdomains[i] !== "") {
-            hostname = subdomains[i] + "." + query;
-          }
-          // Generate a mock sha256 hash
-          const sha256 = Array.from(Array(64), () =>
-            Math.floor(Math.random() * 16).toString(16),
-          ).join("");
+      // Fake domain:
+      let hostname = query;
+      if (subdomains[i] !== "") {
+        hostname = subdomains[i] + "." + query;
+      }
+      // Generate a mock sha256 hash
+      const sha256 = Array.from(Array(64), () =>
+        Math.floor(Math.random() * 16).toString(16),
+      ).join("");
 
-          // Create result object
-          results.push({
-            hostname: hostname,
-            notBefore: notBeforeDate.toISOString().split(".")[0] + "Z",
-            notAfter: notAfterDate.toISOString().split(".")[0] + "Z",
-            issuer: issuers[Math.floor(Math.random() * issuers.length)],
-            sha256: sha256,
-          });
-        }
+      // Create result object
+      results.push({
+        hostname: hostname,
+        notBefore: notBeforeDate.toISOString().split(".")[0] + "Z",
+        notAfter: notAfterDate.toISOString().split(".")[0] + "Z",
+        issuer: issuers[Math.floor(Math.random() * issuers.length)],
+        sha256: sha256,
+      });
+    }
 
-        resolve(results);
-      }, 200);
-    });
+    return results;
   }
 
   // Function to display search results
-  function displaySearchResults(results) {
+  function renderSearch(query, results) {
     // Clear previous results
     while (searchResults.firstChild) {
       searchResults.removeChild(searchResults.firstChild);
@@ -150,15 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Add click event to navigate to certificate details
       searchResult.addEventListener("click", function () {
-        const url = new URL(window.location);
-        url.searchParams.delete("q"); // Remove search query parameter
-        url.searchParams.set("sha256", result.sha256); // Add sha256 parameter
-        window.history.pushState(
-          { sha256: result.sha256, hostname: result.hostname },
-          "",
-          url,
-        );
-        displayCert(result.sha256);
+        navigate(NavigationState.CERTIFICATE, { sha256: result.sha256 }, true);
       });
 
       // Append result to results container
@@ -167,33 +248,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Show results container
     searchResults.style.display = "block";
+    container.classList.add("search-active");
   }
 
   // Function to display certificate details
-  function displayCert(sha256) {
-    // Hide search results and search box, and show loading spinner
-    searchResults.style.display = "none";
-    form.style.display = "none"; // Hide the search box
-    loadingSpinner.style.display = "block";
-
-    // Create certificate details container if it doesn't exist
-    let certDetailsContainer = document.getElementById("certificate-details");
-    if (!certDetailsContainer) {
-      certDetailsContainer = document.createElement("div");
-      certDetailsContainer.id = "certificate-details";
-      certDetailsContainer.className = "certificate-details";
-      container.appendChild(certDetailsContainer);
-    } else {
-      // Clear previous details
-      while (certDetailsContainer.firstChild) {
-        certDetailsContainer.removeChild(certDetailsContainer.firstChild);
-      }
+  function renderCert(query, details) {
+    // Clear previous details
+    while (certDetailsContainer.firstChild) {
+      certDetailsContainer.removeChild(certDetailsContainer.firstChild);
     }
-
-    // Fetch certificate details
-    mockGetCertificateDetails(sha256).then((details) => {
-      // Hide loading spinner
-      loadingSpinner.style.display = "none";
 
       // Create certificate details header
       const header = document.createElement("h2");
@@ -255,34 +318,6 @@ document.addEventListener("DOMContentLoaded", function () {
       infoSection.appendChild(pemBox);
 
       certDetailsContainer.appendChild(infoSection);
-
-      // Show certificate details container
-      certDetailsContainer.style.display = "block";
-    });
-  }
-
-  // Function to perform search
-  function performSearch(query, updateHistory = true) {
-    searchBox.value = query;
-    container.classList.add("search-active");
-    form.style.display = "block"; // Show the search box
-    loadingSpinner.style.display = "block";
-    searchResults.style.display = "none";
-
-    if (updateHistory) {
-      const url = new URL(window.location);
-      url.searchParams.set("q", query);
-      window.history.pushState({ query: query }, "", url);
-    }
-
-    // Call mock search function
-    mockSearch(query).then((results) => {
-      // Hide loading spinner
-      loadingSpinner.style.display = "none";
-
-      // Display search results
-      displaySearchResults(results);
-    });
   }
 
   // Add event listener for form submission
@@ -291,31 +326,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchQuery = searchBox.value;
 
     if (searchQuery.trim()) {
-      performSearch(searchQuery, searchQuery !== lastSearchQuery);
-      lastSearchQuery = searchQuery;
+      navigate(NavigationState.SEARCH, { query: searchQuery }, true);
     }
   });
 
+  title.addEventListener("click", function (event) {
+    event.preventDefault();
+    navigate(NavigationState.HOME, {}, true);
+  })
+
   // Handle browser back/forward buttons
   window.addEventListener("popstate", function (event) {
-    // Hide certificate details if visible
-    const certDetailsContainer = document.getElementById("certificate-details");
-    if (certDetailsContainer) {
-      certDetailsContainer.style.display = "none";
-    }
-
     if (event.state && event.state.sha256) {
-      // If state has sha256, display certificate details
-      displayCert(event.state.sha256);
+      navigate(NavigationState.CERTIFICATE, { sha256: event.state.sha256 }, false);
     } else if (event.state && event.state.query) {
-      // If state has query, perform search
-      performSearch(event.state.query, false);
+      navigate(NavigationState.SEARCH, { query: event.state.query }, false);
     } else {
-      // If no state, reset the page
-      searchBox.value = "";
-      container.classList.remove("search-active");
-      searchResults.style.display = "none";
-      form.style.display = "block"; // Show the search box
+      navigate(NavigationState.HOME, {}, false);
     }
   });
 
@@ -325,13 +352,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const initialSha256 = params.get("sha256");
 
   if (initialSha256) {
-    // If sha256 parameter is present, display certificate details
-    // We don't have a hostname from a search result, so we'll use the default
-    form.style.display = "none"; // Hide the search box
-    displayCert(initialSha256);
+    navigate(NavigationState.CERTIFICATE, { sha256: initialSha256 }, false);
   } else if (initialQuery) {
-    // If query parameter is present, perform search
-    form.style.display = "block"; // Show the search box
-    performSearch(initialQuery, false);
+    navigate(NavigationState.SEARCH, { query: initialQuery }, false);
+  } else {
+    navigate(NavigationState.HOME, {}, false);
   }
 });

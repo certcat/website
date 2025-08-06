@@ -155,7 +155,7 @@ footer {
 }
 
 /* Certificate details styles */
-.certificate-details {
+#certificate-details {
   display: none;
   width: 100%;
   margin-top: 2rem;
