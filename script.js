@@ -3,15 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const container = document.querySelector(".container");
   const searchBox = document.querySelector(".search-box input");
   const searchResults = document.getElementById("search-results");
+  const loadingSpinner = document.getElementById("loading-spinner");
 
   // Variable to track the last search query
   let lastSearchQuery = "";
-
-  // Create loading spinner element
-  const loadingSpinner = document.createElement("div");
-  loadingSpinner.className = "loading-spinner";
-  loadingSpinner.style.display = "none";
-  container.appendChild(loadingSpinner);
 
   // Mock function to fetch certificate details by sha256
   function mockGetCertificateDetails(sha256) {
