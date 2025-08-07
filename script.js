@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Reset: Hide all pages and clear URL parameters
     pages.forEach((page) => {
       page.style.display = "none";
+      while (page.firstChild) {
+        page.removeChild(page.firstChild);
+      }
     });
     url.search = "";
 
@@ -106,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Unhandled data request:", query);
           resolve({});
         }
-      }, 1000);
+      }, 200);
     });
   }
 
@@ -218,11 +221,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to display search results
   function renderSearch(query, results) {
-    // Clear previous results
-    while (searchResults.firstChild) {
-      searchResults.removeChild(searchResults.firstChild);
-    }
-
     // Get the template
     const template = document.getElementById("search-result-template");
 
@@ -253,11 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to display certificate details
   function renderCert(query, details) {
-    // Clear previous details
-    while (certDetailsContainer.firstChild) {
-      certDetailsContainer.removeChild(certDetailsContainer.firstChild);
-    }
-
       // Create certificate details header
       const header = document.createElement("h2");
       header.textContent = "Certificate Details";
@@ -330,6 +323,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Click page title to go home
   title.addEventListener("click", function (event) {
     event.preventDefault();
     navigate(NavigationState.HOME, {}, true);
