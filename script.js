@@ -72,22 +72,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Display the right page and update URL
     switch (state) {
       case NavigationState.SEARCH:
-        url.searchParams.set("q", data.query);
-        window.history.pushState({ query: data.query }, "", url);
-
         searchBox.value = data.query;
-
-        form.style.display = "block";
         searchResults.style.display = "block";
+        form.style.display = "block";
         container.classList.add("search-active");
         break;
       case NavigationState.CERTIFICATE:
-        url.searchParams.set("sha256", data.sha256);
-        window.history.pushState({ sha256: data.sha256 }, "", url);
-
         certDetailsContainer.style.display = "block";
         form.style.display = "none";
         container.classList.add("search-active");
